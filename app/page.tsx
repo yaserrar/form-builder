@@ -210,6 +210,53 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <div className="p-4 rounded-lg col-span-2 border border-input flex flex-col gap-2 bg-slate-800 text-white">
+          <pre>
+            {`
+const {
+  handleSubmit,
+  control,
+  reset,
+  watch,
+  setValue,
+  register,
+  formState: { errors },
+} = useForm<FormSchema>({
+  resolver: zodResolver(formSchema),
+});
+          `}
+          </pre>
+
+          {form.map((item) => {
+            if (item.type === "input") {
+              return (
+                <pre key={item.id}>
+                  {`
+<div>
+  <Label htmlFor="${item.name}">Name</Label>
+  <Input id="${item.name}" placeholder="${item.placeholder}" {...register("${item.name}")} />
+  <ErrorMessage>{errors.${item.name}?.message}</ErrorMessage>
+</div>
+                  `}
+                </pre>
+              );
+            }
+
+            if (item.type === "textarea") {
+              return (
+                <pre key={item.id}>
+                  {`
+<div>
+  <Label htmlFor="${item.name}">Name</Label>
+  <Textarea id="${item.name}" placeholder="${item.placeholder}" {...register("${item.name}")} />
+  <ErrorMessage>{errors.${item.name}?.message}</ErrorMessage>
+</div>
+                  `}
+                </pre>
+              );
+            }
+          })}
+        </div>
       </section>
     </main>
   );
