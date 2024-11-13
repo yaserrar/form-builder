@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-const fieldTypes = ["input", "textarea", "select"] as const;
+export const fieldTypes = ["input", "textarea", "select"] as const;
 
-const formSchema = z.object({
+export const formSchema = z.object({
   type: z.enum(fieldTypes),
   name: z
     .string({ required_error: "Field is required" })
@@ -13,6 +13,12 @@ const formSchema = z.object({
   placeholder: z
     .string({ required_error: "Field is required" })
     .min(1, { message: "Field is required" }),
+  options: z.array(
+    z.object({
+      value: z.string(),
+      label: z.string(),
+    })
+  ),
 });
 
-const FormSchema = z.infer<typeof formSchema>;
+export type FormSchema = z.infer<typeof formSchema>;
