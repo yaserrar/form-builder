@@ -6,12 +6,24 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
-type FormType = {
-  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "switch";
-  name: string;
-  label: string;
-  placeholder: string;
-};
+type FormType =
+  | {
+      type: "input" | "textarea";
+      name: string;
+      label: string;
+      placeholder: string;
+    }
+  | {
+      type: "select";
+      name: string;
+      label: string;
+      options: { label: string; value: string }[];
+    }
+  | {
+      type: "checkbox" | "switch";
+      name: string;
+      label: string;
+    };
 
 export default function Home() {
   const [name, setName] = useState<string>("");
