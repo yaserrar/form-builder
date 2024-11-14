@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { fieldTypes, FormSchema, formSchema } from "@/validations/form";
+import {
+  fieldTypes,
+  FormSchema,
+  formSchema,
+  inputTypes,
+} from "@/validations/form";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,10 +24,13 @@ import ErrorMessage from "@/components/ui/error-message";
 import { v4 as uuid } from "uuid";
 import { X } from "lucide-react";
 
+const generateName = () => `name__${uuid().split("-")[1]}`;
+
 type FormType =
   | {
       id: string;
       type: "input" | "textarea";
+      inputType: "text" | "email" | "password" | "file";
       name: string;
       label: string;
       placeholder: string;
@@ -41,6 +49,17 @@ type FormType =
       label: string;
     };
 
+const defaultValues: FormSchema = {
+  type: "input",
+  name: generateName(),
+  inputType: "text",
+  label: "",
+  placeholder: "",
+  min: null,
+  max: null,
+  options: [],
+} as const;
+
 export default function Home() {
   const [form, setForm] = useState<FormType[]>([]);
 
@@ -54,13 +73,7 @@ export default function Home() {
     formState: { errors },
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      type: "input",
-      name: "",
-      label: "",
-      placeholder: "",
-      options: [],
-    },
+    defaultValues,
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
@@ -70,6 +83,7 @@ export default function Home() {
         {
           id: uuid(),
           type: data.type,
+          inputType: data.inputType,
           name: data.name,
           label: data.label,
           placeholder: data.placeholder,
@@ -77,36 +91,6 @@ export default function Home() {
       ]);
     }
   };
-
-  // const addInput = () => {
-  //   setForm([
-  //     ...form,
-  //     {
-  //       type: "input",
-  //       name: name,
-  //       label: label,
-  //       placeholder: placeholder,
-  //     },
-  //   ]);
-  //   setName("");
-  //   setLabel("");
-  //   setPlaceholder("");
-  // };
-
-  // const addTextarea = () => {
-  //   setForm([
-  //     ...form,
-  //     {
-  //       type: "textarea",
-  //       name: name,
-  //       label: label,
-  //       placeholder: placeholder,
-  //     },
-  //   ]);
-  //   setName("");
-  //   setLabel("");
-  //   setPlaceholder("");
-  // };
 
   const type = watch("type");
 
@@ -127,11 +111,18 @@ export default function Home() {
                 name="type"
                 render={({ field: { onBlur, onChange, ref, value } }) => (
                   <Select
-                    onValueChange={(value) => onChange(value)}
+                    onValueChange={(value) => {
+                      onChange(value);
+                      setValue("inputType", "text", {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      });
+                    }}
                     value={value}
                   >
-                    <SelectTrigger id="cityId" onBlur={onBlur} ref={ref}>
-                      <SelectValue placeholder="Selectionner la ville" />
+                    <SelectTrigger id="type" onBlur={onBlur} ref={ref}>
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
                       {fieldTypes.map((type) => (
@@ -145,6 +136,33 @@ export default function Home() {
               />
               <ErrorMessage>{errors.type?.message}</ErrorMessage>
             </div>
+            {type === "input" && (
+              <div>
+                <Label htmlFor="type">Input type</Label>
+                <Controller
+                  control={control}
+                  name="inputType"
+                  render={({ field: { onBlur, onChange, ref, value } }) => (
+                    <Select
+                      onValueChange={(value) => onChange(value)}
+                      value={value ?? "text"}
+                    >
+                      <SelectTrigger id="inputType" onBlur={onBlur} ref={ref}>
+                        <SelectValue placeholder="Select input type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {inputTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <ErrorMessage>{errors.inputType?.message}</ErrorMessage>
+              </div>
+            )}
             <div>
               <Label htmlFor="name">Name</Label>
               <Input id="name" placeholder="Name" {...register("name")} />
@@ -156,16 +174,31 @@ export default function Home() {
               <ErrorMessage>{errors.label?.message}</ErrorMessage>
             </div>
             {(type === "input" || type === "textarea") && (
-              <div>
-                <Label htmlFor="placeholder">Placeholder</Label>
-                <Input
-                  id="placeholder"
-                  placeholder="Placeholder"
-                  {...register("placeholder")}
-                />
-                <ErrorMessage>{errors.placeholder?.message}</ErrorMessage>
-              </div>
+              <>
+                <div>
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input
+                    id="placeholder"
+                    placeholder="Placeholder"
+                    {...register("placeholder")}
+                  />
+                  <ErrorMessage>{errors.placeholder?.message}</ErrorMessage>
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="min">Min</Label>
+                    <Input id="min" placeholder="Min" {...register("min")} />
+                    <ErrorMessage>{errors.min?.message}</ErrorMessage>
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="min">Max</Label>
+                    <Input id="max" placeholder="Max" {...register("max")} />
+                    <ErrorMessage>{errors.max?.message}</ErrorMessage>
+                  </div>
+                </div>
+              </>
             )}
+
             <div className="flex gap-2 mt-2">
               <Button className="flex-1" type="submit">
                 Add field
@@ -174,7 +207,9 @@ export default function Home() {
                 className="flex-1"
                 variant="destructive"
                 type="button"
-                onClick={() => reset()}
+                onClick={() =>
+                  reset({ ...defaultValues, name: generateName() })
+                }
               >
                 Reset
               </Button>
@@ -197,6 +232,7 @@ export default function Home() {
                 <Input
                   id={item.name}
                   name={item.name}
+                  type={item.inputType}
                   placeholder={item.placeholder}
                 />
               )}
@@ -210,7 +246,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-lg col-span-2 border border-input flex flex-col gap-2 bg-slate-800 text-white">
+        <div className="p-4 rounded-lg col-span-2 border border-input flex flex-col bg-slate-800 text-white">
           <pre>
             {`
 const {
@@ -224,6 +260,10 @@ const {
 } = useForm<FormSchema>({
   resolver: zodResolver(formSchema),
 });
+
+          `}
+            {`
+return (
           `}
           </pre>
 
@@ -256,6 +296,9 @@ const {
               );
             }
           })}
+          {`
+);
+          `}
         </div>
       </section>
     </main>
