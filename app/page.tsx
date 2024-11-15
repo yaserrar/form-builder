@@ -20,6 +20,8 @@ export type FormType =
       name: string;
       label: string;
       placeholder: string;
+      min: number | null;
+      max: number | null;
     }
   | {
       id: string;
@@ -27,6 +29,8 @@ export type FormType =
       name: string;
       label: string;
       placeholder: string;
+      min: number | null;
+      max: number | null;
     };
 // | {
 //     id: string;
@@ -91,6 +95,40 @@ export default function Home() {
         <div className="p-4 rounded-lg col-span-2 border border-input flex flex-col bg-slate-800 text-white">
           <pre>
             {`
+
+const formSchema = {
+              ${form.map((item) => {
+                if (item.field === "input") {
+                  return `
+  ${item.name}: z.string()${
+                    item.min
+                      ? `.min(${item.min}, { message: "${item.min} is min letters" })`
+                      : ""
+                  }${
+                    item.max
+                      ? `.max(${item.max}, { message: "${item.max} is max letters"})`
+                      : ""
+                  },
+                    `;
+                }
+
+                if (item.field === "textarea") {
+                  return `
+  ${item.name}: z.string()${
+                    item.min
+                      ? `.min(${item.min}, { message: "${item.min} is min letters" })`
+                      : ""
+                  }${
+                    item.max
+                      ? `.max(${item.max}, { message: "${item.max} is max letters"})`
+                      : ""
+                  },
+                    `;
+                }
+              })}
+}
+
+
 const {
   handleSubmit,
   control,

@@ -50,6 +50,8 @@ const TextareaDialog = ({ setForm }: Props) => {
         name: data.name,
         label: data.label,
         placeholder: data.placeholder,
+        min: data.min,
+        max: data.max,
       },
     ]);
   };
