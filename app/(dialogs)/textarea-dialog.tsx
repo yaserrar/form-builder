@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import ErrorMessage from "@/components/ui/error-message";
 import { Input } from "@/components/ui/input";
@@ -13,27 +12,27 @@ import { textareaSchema, TextareaSchema } from "@/validations/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 as uuid } from "uuid";
-import { FormType } from "./page";
-
-export const generateName = () => `name__${uuid().split("-")[1]}`;
+import { FormType } from "../page";
+import { generateName } from "@/lib/utils";
 
 const defaultValues: TextareaSchema = {
   name: generateName(),
-  label: "",
+  label: "Message",
   placeholder: "",
   min: null,
   max: null,
 } as const;
 
 type Props = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setForm: React.Dispatch<React.SetStateAction<FormType[]>>;
 };
 
-const TextareaDialog = ({ setForm }: Props) => {
+const TextareaDialog = ({ open, setOpen, setForm }: Props) => {
   const {
     handleSubmit,
     control,
-    reset,
     register,
     formState: { errors },
   } = useForm<TextareaSchema>({
@@ -54,13 +53,11 @@ const TextareaDialog = ({ setForm }: Props) => {
         max: data.max,
       },
     ]);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>Add textarea</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Textarea field</DialogTitle>
@@ -130,19 +127,17 @@ const TextareaDialog = ({ setForm }: Props) => {
                 <ErrorMessage>{errors.max?.message}</ErrorMessage>
               </div>
             </div>
-            <div className="flex gap-2 mt-2">
-              <Button className="flex-1" type="submit">
-                Add field
-              </Button>
+            <div className="flex gap-2">
               <Button
                 className="flex-1"
-                variant="destructive"
+                variant="ghost"
                 type="button"
-                onClick={() =>
-                  reset({ ...defaultValues, name: generateName() })
-                }
+                onClick={() => setOpen(false)}
               >
-                Reset
+                Cancel
+              </Button>
+              <Button className="flex-1" type="submit">
+                Add field
               </Button>
             </div>
           </div>
