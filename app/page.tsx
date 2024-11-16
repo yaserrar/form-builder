@@ -4,13 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { TrashIcon, X } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { useState } from "react";
-import { v4 as uuid } from "uuid";
-import InputDialog from "./input-dialog";
-import TextareaDialog from "./textarea-dialog";
-
-export const generateName = () => `name__${uuid().split("-")[1]}`;
+import InputDialog from "./(dialogs)/input-dialog";
+import TextareaDialog from "./(dialogs)/textarea-dialog";
 
 export type FormType =
   | {
@@ -39,6 +36,8 @@ export type FormType =
 //   };
 
 export default function Home() {
+  const [inputDialog, setInputDialog] = useState(false);
+  const [textareaDialog, setTextareaDialog] = useState(false);
   const [form, setForm] = useState<FormType[]>([]);
 
   const deleteField = (id: string) => {
@@ -48,8 +47,19 @@ export default function Home() {
   return (
     <main className="max-w-7xl mx-auto p-4">
       <section className="p-4 rounded-lg border border-input flex gap-2 mb-2">
-        <InputDialog setForm={setForm} />
-        <TextareaDialog setForm={setForm} />
+        <Button onClick={() => setInputDialog(true)}>Add input</Button>
+        <Button onClick={() => setTextareaDialog(true)}>Add textarea</Button>
+        {/* ------------------------------------------------------------------------- */}
+        <InputDialog
+          open={inputDialog}
+          setOpen={setInputDialog}
+          setForm={setForm}
+        />
+        <TextareaDialog
+          open={textareaDialog}
+          setOpen={setTextareaDialog}
+          setForm={setForm}
+        />
       </section>
       <section className="grid grid-cols-2 gap-4">
         <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
@@ -58,7 +68,7 @@ export default function Home() {
               key={item.id}
               className="flex justify-between p-2 border border-input rounded-lg items-center"
             >
-              <p>{item.field}</p>
+              <p className="capitalize">{item.field}</p>
               <Button
                 variant="ghost"
                 size="icon"
@@ -96,8 +106,8 @@ export default function Home() {
           <pre>
             {`
 
-const formSchema = {
-              ${form.map((item) => {
+const formSchema = {${form
+              .map((item) => {
                 if (item.field === "input") {
                   return `
   ${item.name}: z.string()${
@@ -108,10 +118,8 @@ const formSchema = {
                     item.max
                       ? `.max(${item.max}, { message: "${item.max} is max letters"})`
                       : ""
-                  },
-                    `;
+                  },`;
                 }
-
                 if (item.field === "textarea") {
                   return `
   ${item.name}: z.string()${
@@ -122,10 +130,10 @@ const formSchema = {
                     item.max
                       ? `.max(${item.max}, { message: "${item.max} is max letters"})`
                       : ""
-                  },
-                    `;
+                  },`;
                 }
-              })}
+              })
+              .join("")}
 }
 
 
