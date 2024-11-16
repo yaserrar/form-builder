@@ -11,9 +11,7 @@ export const inputSchema = z.object({
   label: z
     .string({ required_error: "Field is required" })
     .min(1, { message: "Field is required" }),
-  placeholder: z
-    .string({ required_error: "Field is required" })
-    .min(1, { message: "Field is required" }),
+  placeholder: z.string({ required_error: "Field is required" }),
   min: z.number().nullable(),
   max: z.number().nullable(),
 });
@@ -27,9 +25,7 @@ export const textareaSchema = z.object({
   label: z
     .string({ required_error: "Field is required" })
     .min(1, { message: "Field is required" }),
-  placeholder: z
-    .string({ required_error: "Field is required" })
-    .min(1, { message: "Field is required" }),
+  placeholder: z.string({ required_error: "Field is required" }),
   min: z.number().nullable(),
   max: z.number().nullable(),
 });
