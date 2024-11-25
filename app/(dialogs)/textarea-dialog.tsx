@@ -8,36 +8,38 @@ import {
 import ErrorMessage from "@/components/ui/error-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { textareaSchema, TextareaSchema } from "@/validations/form";
+import { textareaSchema, TextareaSchema } from "@/validations/textarea-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import { FormType } from "../page";
 import { generateName } from "@/lib/utils";
 
-const defaultValues: TextareaSchema = {
-  name: generateName(),
-  label: "Message",
-  placeholder: "",
-  min: null,
-  max: null,
-} as const;
-
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setForm: React.Dispatch<React.SetStateAction<FormType[]>>;
+  defaultForm?: TextareaSchema;
 };
 
-const TextareaDialog = ({ open, setOpen, setForm }: Props) => {
+const TextareaDialog = ({ open, setOpen, setForm, defaultForm }: Props) => {
+  const defaultValues: TextareaSchema = {
+    name: generateName(),
+    label: "Message",
+    placeholder: "",
+    min: null,
+    max: null,
+  } as const;
+
   const {
     handleSubmit,
     control,
     register,
+    reset,
     formState: { errors },
   } = useForm<TextareaSchema>({
     resolver: zodResolver(textareaSchema),
-    defaultValues,
+    defaultValues: defaultForm ?? defaultValues,
   });
 
   const onSubmit: SubmitHandler<TextareaSchema> = (data) => {
@@ -53,6 +55,7 @@ const TextareaDialog = ({ open, setOpen, setForm }: Props) => {
         max: data.max,
       },
     ]);
+    reset();
     setOpen(false);
   };
 
@@ -127,7 +130,7 @@ const TextareaDialog = ({ open, setOpen, setForm }: Props) => {
                 <ErrorMessage>{errors.max?.message}</ErrorMessage>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 mt-2">
               <Button
                 className="flex-1"
                 variant="ghost"
