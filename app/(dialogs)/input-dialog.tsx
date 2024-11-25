@@ -15,21 +15,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { inputSchema, InputSchema, inputTypes } from "@/validations/form";
+import { inputTypes } from "@/lib/data";
+import { generateName } from "@/lib/utils";
+import { inputSchema, InputSchema } from "@/validations/input-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import { FormType } from "../page";
-import { generateName } from "@/lib/utils";
-
-const defaultValues: InputSchema = {
-  name: generateName(),
-  type: "text",
-  label: "Username",
-  placeholder: "",
-  min: null,
-  max: null,
-} as const;
 
 type Props = {
   open: boolean;
@@ -38,11 +30,20 @@ type Props = {
 };
 
 const InputDialog = ({ open, setOpen, setForm }: Props) => {
+  const defaultValues: InputSchema = {
+    name: generateName(),
+    type: "text",
+    label: "Username",
+    placeholder: "",
+    min: null,
+    max: null,
+  } as const;
+
   const {
     handleSubmit,
     control,
-    setValue,
     register,
+    reset,
     formState: { errors },
   } = useForm<InputSchema>({
     resolver: zodResolver(inputSchema),
@@ -63,6 +64,7 @@ const InputDialog = ({ open, setOpen, setForm }: Props) => {
         max: data.max,
       },
     ]);
+    reset();
     setOpen(false);
   };
 
@@ -80,17 +82,7 @@ const InputDialog = ({ open, setOpen, setForm }: Props) => {
                 control={control}
                 name="type"
                 render={({ field: { onBlur, onChange, ref, value } }) => (
-                  <Select
-                    onValueChange={(value) => {
-                      onChange(value);
-                      setValue("type", "text", {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      });
-                    }}
-                    value={value}
-                  >
+                  <Select onValueChange={onChange} value={value}>
                     <SelectTrigger id="type" onBlur={onBlur} ref={ref}>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -135,6 +127,7 @@ const InputDialog = ({ open, setOpen, setForm }: Props) => {
                     <Input
                       id="min"
                       placeholder="Min"
+                      type="number"
                       {...field}
                       value={field.value?.toString()}
                       onChange={(e) =>
@@ -156,6 +149,7 @@ const InputDialog = ({ open, setOpen, setForm }: Props) => {
                     <Input
                       id="max"
                       placeholder="Max"
+                      type="number"
                       {...field}
                       value={field.value?.toString()}
                       onChange={(e) =>
