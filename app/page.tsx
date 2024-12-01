@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { inputTypes } from "@/lib/data";
-import { Pencil, PlusCircle, TrashIcon } from "lucide-react";
+import { Check, PlusCircle, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import InputDialog from "./(dialogs)/input-dialog";
 import TextareaDialog from "./(dialogs)/textarea-dialog";
 import { Switch } from "@/components/ui/switch";
 import SwitchDialog from "./(dialogs)/switch-dialog";
 import Code from "./code";
+import CheckboxDialog from "./(dialogs)/checkbox-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type FormType =
   | {
@@ -35,7 +37,7 @@ export type FormType =
     }
   | {
       id: string;
-      field: "switch";
+      field: "switch" | "checkbox";
       name: string;
       label: string;
     };
@@ -49,6 +51,7 @@ export default function Home() {
   const [inputDialog, setInputDialog] = useState(false);
   const [textareaDialog, setTextareaDialog] = useState(false);
   const [switchDialog, setSwitchDialog] = useState(false);
+  const [checkboxDialog, setCheckboxDialog] = useState(false);
 
   const [form, setForm] = useState<FormType[]>([]);
 
@@ -67,6 +70,9 @@ export default function Home() {
         </Button>
         <Button onClick={() => setSwitchDialog(true)}>
           Add switch <PlusCircle />
+        </Button>
+        <Button onClick={() => setCheckboxDialog(true)}>
+          Add checkbox <PlusCircle />
         </Button>
         {/* ------------------------------------------------------------------------- */}
         {inputDialog && (
@@ -90,6 +96,13 @@ export default function Home() {
             setForm={setForm}
           />
         )}
+        {checkboxDialog && (
+          <CheckboxDialog
+            open={checkboxDialog}
+            setOpen={setCheckboxDialog}
+            setForm={setForm}
+          />
+        )}
       </section>
       <section className="grid grid-cols-2 gap-4">
         <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
@@ -100,13 +113,13 @@ export default function Home() {
             >
               <p className="capitalize text-sm font-medium">{item.field}</p>
               <div key={item.id} className="flex items-center">
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 hover:bg-primary/10"
                 >
                   <Pencil size={12} className="text-primary" />
-                </Button>
+                </Button> */}
                 <Button
                   variant="ghost"
                   size="icon"
@@ -123,7 +136,7 @@ export default function Home() {
           {form.map((item) => (
             <div key={item.id}>
               {item.field === "input" && (
-                <>
+                <div>
                   <Label htmlFor={item.name}>{item.label}</Label>
                   <Input
                     id={item.name}
@@ -131,23 +144,29 @@ export default function Home() {
                     type={item.type}
                     placeholder={item.placeholder}
                   />
-                </>
+                </div>
               )}
               {item.field === "textarea" && (
-                <>
+                <div>
                   <Label htmlFor={item.name}>{item.label}</Label>
                   <Textarea
                     id={item.name}
                     name={item.name}
                     placeholder={item.placeholder}
                   />
-                </>
+                </div>
               )}
               {item.field === "switch" && (
-                <>
+                <div className="flex flex-row items-center gap-2">
                   <Switch id={item.name} name={item.name} />
                   <Label htmlFor={item.name}>{item.label}</Label>
-                </>
+                </div>
+              )}
+              {item.field === "checkbox" && (
+                <div className="flex flex-row items-center gap-2">
+                  <Checkbox id={item.name} name={item.name} />
+                  <Label htmlFor={item.name}>{item.label}</Label>
+                </div>
               )}
             </div>
           ))}
