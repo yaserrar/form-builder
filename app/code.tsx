@@ -10,7 +10,7 @@ const Code = ({ form }: Props) => {
   const code = `
 const formSchema = z.object({${form
     .map((item) => {
-      if (item.field === "input") {
+      if (item.field === "input" || item.field === "textarea") {
         return `
   ${item.name}: z.string()${
           item.min
@@ -22,19 +22,7 @@ const formSchema = z.object({${form
             : ""
         },`;
       }
-      if (item.field === "textarea") {
-        return `
-  ${item.name}: z.string()${
-          item.min
-            ? `.min(${item.min}, { message: "${item.min} is min letters" })`
-            : ""
-        }${
-          item.max
-            ? `.max(${item.max}, { message: "${item.max} is max letters"})`
-            : ""
-        },`;
-      }
-      if (item.field === "switch") {
+      if (item.field === "switch" || item.field === "checkbox") {
         return `
   ${item.name}: z.boolean(),`;
       }
@@ -84,7 +72,7 @@ return (
       name="${item.name}"
       control={control}
       render={({ field: { onChange, value, ref, name, onBlur } }) => (
-        <div>
+        <div className="flex flex-row items-center gap-2">
           <Switch
             id="${item.name}" 
             ref={ref}
@@ -106,7 +94,7 @@ return (
       name="${item.name}"
       control={control}
       render={({ field: { onChange, value, ref, name, onBlur } }) => (
-        <div>
+        <div className="flex flex-row items-center gap-2">
           <Checkbox
             id="${item.name}" 
             ref={ref}
@@ -128,8 +116,6 @@ return (
 
 
 `;
-
-  console.log(code);
 
   return (
     <div className="col-span-2 grid">
