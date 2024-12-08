@@ -1,19 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { inputTypes } from "@/lib/data";
-import { Check, PlusCircle, TrashIcon } from "lucide-react";
+import { PlusCircle, TrashIcon } from "lucide-react";
 import { useState } from "react";
-import InputDialog from "./(dialogs)/input-dialog";
-import TextareaDialog from "./(dialogs)/textarea-dialog";
-import { Switch } from "@/components/ui/switch";
-import SwitchDialog from "./(dialogs)/switch-dialog";
-import Code from "./code";
 import CheckboxDialog from "./(dialogs)/checkbox-dialog";
-import { Checkbox } from "@/components/ui/checkbox";
+import InputDialog from "./(dialogs)/input-dialog";
+import SwitchDialog from "./(dialogs)/switch-dialog";
+import TextareaDialog from "./(dialogs)/textarea-dialog";
+import Code from "./code";
+import Form from "./form";
 
 export type FormType =
   | {
@@ -132,45 +128,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
-          {form.map((item) => (
-            <div key={item.id}>
-              {item.field === "input" && (
-                <div>
-                  <Label htmlFor={item.name}>{item.label}</Label>
-                  <Input
-                    id={item.name}
-                    name={item.name}
-                    type={item.type}
-                    placeholder={item.placeholder}
-                  />
-                </div>
-              )}
-              {item.field === "textarea" && (
-                <div>
-                  <Label htmlFor={item.name}>{item.label}</Label>
-                  <Textarea
-                    id={item.name}
-                    name={item.name}
-                    placeholder={item.placeholder}
-                  />
-                </div>
-              )}
-              {item.field === "switch" && (
-                <div className="flex flex-row items-center gap-2">
-                  <Switch id={item.name} name={item.name} />
-                  <Label htmlFor={item.name}>{item.label}</Label>
-                </div>
-              )}
-              {item.field === "checkbox" && (
-                <div className="flex flex-row items-center gap-2">
-                  <Checkbox id={item.name} name={item.name} />
-                  <Label htmlFor={item.name}>{item.label}</Label>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <Form form={form} />
         <Code form={form} />
       </section>
     </main>
