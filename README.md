@@ -6,6 +6,10 @@ This is a modern Next.js application that simplifies form creation and validatio
 - [**ShadCN UI**](https://shadcn.dev/) for beautiful and accessible UI components.
 - [**React Hook Form**](https://react-hook-form.com/) for managing form state and handling submissions.
 
+## Demo
+
+Checkout the demo: https://ui-form-builder.vercel.app/
+
 ## Features
 
 - **Dynamic Form Creation**: Build forms programmatically based on Zod schemas.
