@@ -10,6 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import ErrorMessage from "@/components/ui/error-message";
+import { Select } from "@radix-ui/react-select";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   form: FormType[];
@@ -37,6 +44,9 @@ const Form = ({ form }: Props) => {
         acc[item.name] = z.boolean();
       }
 
+      if (item.field === "select") {
+        acc[item.name] = z.string();
+      }
       return acc;
     }, {})
   );
@@ -58,6 +68,14 @@ const Form = ({ form }: Props) => {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     console.log(data);
   };
+
+  const countries = [
+    { label: "Morocco", value: "Morocco" },
+    { label: "France", value: "France" },
+    { label: "Spain", value: "Spain" },
+    { label: "Germany", value: "Germany" },
+    { label: "Italy", value: "Italy" },
+  ];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -126,6 +144,30 @@ const Form = ({ form }: Props) => {
                   </div>
                 )}
               />
+            )}
+            {item.field === "select" && (
+              <div>
+                <Label htmlFor={item.name}>{item.label}</Label>
+                <Controller
+                  name={item.name}
+                  control={control}
+                  render={({ field: { onBlur, onChange, ref, value } }) => (
+                    <Select onValueChange={onChange} value={value}>
+                      <SelectTrigger id="type" onBlur={onBlur} ref={ref}>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.value} value={country.value}>
+                            {country.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+              </div>
             )}
           </div>
         ))}

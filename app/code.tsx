@@ -27,6 +27,10 @@ const formSchema = z.object({${form
         return `
   ${item.name}: z.boolean(),`;
       }
+      if (item.field === "select") {
+        return `
+  ${item.name}: z.string(),`;
+      }
     })
     .join("")}
 });
@@ -45,6 +49,17 @@ const {
   resolver: zodResolver(formSchema),
 });
 
+${
+  form.find((item) => item.field === "select")
+    ? `const countries = [
+  { label: "Morocco", value: "Morocco" },
+  { label: "France", value: "France" },
+  { label: "Spain", value: "Spain" },
+  { label: "Germany", value: "Germany" },
+  { label: "Italy", value: "Italy" },
+];`
+    : ""
+}
 
 return (
   <div className="flex flex-col gap-2">${form
@@ -109,6 +124,32 @@ return (
         </div>
       )}
     />`;
+      }
+
+      if (item.field === "select") {
+        return `
+    <div>
+      <Label htmlFor="${item.name}">${item.label}</Label>
+      <Controller
+        name="${item.name}"
+        control={control}
+        render={({ field: { onBlur, onChange, ref, value } }) => (
+          <Select onValueChange={onChange} value={value}>
+            <SelectTrigger id="${item.name}" onBlur={onBlur} ref={ref}>
+              <SelectValue placeholder="${item.placeholder}" />
+            </SelectTrigger>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.value} value={country.value}>
+                  {country.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      />
+      <ErrorMessage>{errors.${item.name}?.message}</ErrorMessage>
+    </div>`;
       }
     })
     .join("")}

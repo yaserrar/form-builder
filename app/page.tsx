@@ -10,6 +10,7 @@ import SwitchDialog from "./(dialogs)/switch-dialog";
 import TextareaDialog from "./(dialogs)/textarea-dialog";
 import Code from "./code";
 import Form from "./form";
+import SelectDialog from "./(dialogs)/select-dialog";
 
 export type FormType =
   | {
@@ -36,6 +37,13 @@ export type FormType =
       field: "switch" | "checkbox";
       name: string;
       label: string;
+    }
+  | {
+      id: string;
+      field: "select";
+      name: string;
+      label: string;
+      placeholder: string;
     };
 // | {
 //     id: string;
@@ -48,6 +56,7 @@ export default function Home() {
   const [textareaDialog, setTextareaDialog] = useState(false);
   const [switchDialog, setSwitchDialog] = useState(false);
   const [checkboxDialog, setCheckboxDialog] = useState(false);
+  const [selectDialog, setSelectDialog] = useState(false);
 
   const [form, setForm] = useState<FormType[]>([]);
 
@@ -69,6 +78,9 @@ export default function Home() {
         </Button>
         <Button onClick={() => setCheckboxDialog(true)}>
           Add checkbox <PlusCircle />
+        </Button>
+        <Button onClick={() => setSelectDialog(true)}>
+          Add select <PlusCircle />
         </Button>
         {/* ------------------------------------------------------------------------- */}
         {inputDialog && (
@@ -96,6 +108,13 @@ export default function Home() {
           <CheckboxDialog
             open={checkboxDialog}
             setOpen={setCheckboxDialog}
+            setForm={setForm}
+          />
+        )}
+        {selectDialog && (
+          <SelectDialog
+            open={selectDialog}
+            setOpen={setSelectDialog}
             setForm={setForm}
           />
         )}
