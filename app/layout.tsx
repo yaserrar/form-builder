@@ -1,8 +1,8 @@
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,8 +16,22 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Form builder",
-  description: "Form builder",
+  metadataBase: new URL("https://ui-form-builder.vercel.app/"),
+  keywords: [
+    "Form builder",
+    "Shadcn",
+    "Shadcn ui",
+    "React Hook Form",
+    "Zod",
+    "Tailwind CSS",
+    "Next.js",
+    "ReactJs",
+  ],
+  title: "Form builder - Shadcn, React Hook Form, Zod, Tailwind CSS, Next.js",
+  description: "Form Builder Zod, ShadCN, and React Hook Form",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
