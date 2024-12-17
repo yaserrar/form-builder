@@ -160,7 +160,7 @@ return (
 `;
 
   return (
-    <div className="col-span-2 grid relative">
+    <div className="md:col-span-2 col-span-1 grid relative">
       <CopyCodeButton code={code} />
       <CodePanel code={code} />
     </div>

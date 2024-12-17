@@ -65,8 +65,8 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-4">
-      <section className="p-4 rounded-lg border border-input flex gap-2 mb-2">
+    <main>
+      <section className="p-4 rounded-lg border border-input flex-wrap flex gap-2 mb-4">
         <Button onClick={() => setInputDialog(true)}>
           Add input <PlusCircle />
         </Button>
@@ -119,7 +119,7 @@ export default function Home() {
           />
         )}
       </section>
-      <section className="grid grid-cols-2 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
           {form.map((item) => (
             <div

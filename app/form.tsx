@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { FormType } from "./page";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -78,104 +78,113 @@ const Form = ({ form }: Props) => {
   ];
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
-        {form.map((item) => (
-          <div key={item.id}>
-            {item.field === "input" && (
-              <div>
-                <Label htmlFor={item.name}>{item.label}</Label>
-                <Input
-                  id={item.name}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  {...register(item.name)}
-                />
-                <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
-              </div>
-            )}
-            {item.field === "textarea" && (
-              <div>
-                <Label htmlFor={item.name}>{item.label}</Label>
-                <Textarea
-                  id={item.name}
-                  placeholder={item.placeholder}
-                  {...register(item.name)}
-                />
-                <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
-              </div>
-            )}
-            {item.field === "switch" && (
-              <Controller
-                name={item.name}
-                control={control}
-                render={({ field: { onChange, value, ref, name, onBlur } }) => (
-                  <div className="flex flex-row items-center gap-2">
-                    <Switch
-                      id={item.name}
-                      ref={ref}
-                      name={name}
-                      onBlur={onBlur}
-                      onCheckedChange={onChange}
-                      checked={value}
-                    />
-                    <Label htmlFor={item.name}>{item.label}</Label>
-                    <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
-                  </div>
-                )}
-              />
-            )}
-            {item.field === "checkbox" && (
-              <Controller
-                name={item.name}
-                control={control}
-                render={({ field: { onChange, value, ref, name, onBlur } }) => (
-                  <div className="flex flex-row items-center gap-2">
-                    <Checkbox
-                      id={item.name}
-                      ref={ref}
-                      name={name}
-                      onBlur={onBlur}
-                      onCheckedChange={onChange}
-                      checked={value}
-                    />
-                    <Label htmlFor={item.name}>{item.label}</Label>
-                    <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
-                  </div>
-                )}
-              />
-            )}
-            {item.field === "select" && (
-              <div>
-                <Label htmlFor={item.name}>{item.label}</Label>
+    <div className="p-4 rounded-lg border border-input flex flex-col gap-2">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-2">
+          {form.map((item) => (
+            <Fragment key={item.id}>
+              {item.field === "input" && (
+                <div>
+                  <Label htmlFor={item.name}>{item.label}</Label>
+                  <Input
+                    id={item.name}
+                    type={item.type}
+                    placeholder={item.placeholder}
+                    {...register(item.name)}
+                  />
+                  <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+                </div>
+              )}
+              {item.field === "textarea" && (
+                <div>
+                  <Label htmlFor={item.name}>{item.label}</Label>
+                  <Textarea
+                    id={item.name}
+                    placeholder={item.placeholder}
+                    {...register(item.name)}
+                  />
+                  <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+                </div>
+              )}
+              {item.field === "switch" && (
                 <Controller
                   name={item.name}
                   control={control}
-                  render={({ field: { onBlur, onChange, ref, value } }) => (
-                    <Select onValueChange={onChange} value={value}>
-                      <SelectTrigger id="type" onBlur={onBlur} ref={ref}>
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem key={country.value} value={country.value}>
-                            {country.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  render={({
+                    field: { onChange, value, ref, name, onBlur },
+                  }) => (
+                    <div className="flex flex-row items-center gap-2">
+                      <Switch
+                        id={item.name}
+                        ref={ref}
+                        name={name}
+                        onBlur={onBlur}
+                        onCheckedChange={onChange}
+                        checked={value}
+                      />
+                      <Label htmlFor={item.name}>{item.label}</Label>
+                      <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+                    </div>
                   )}
                 />
-                <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
-              </div>
-            )}
-          </div>
-        ))}
-        <Button className="flex-1" type="submit">
-          Register
-        </Button>
-      </div>
-    </form>
+              )}
+              {item.field === "checkbox" && (
+                <Controller
+                  name={item.name}
+                  control={control}
+                  render={({
+                    field: { onChange, value, ref, name, onBlur },
+                  }) => (
+                    <div className="flex flex-row items-center gap-2">
+                      <Checkbox
+                        id={item.name}
+                        ref={ref}
+                        name={name}
+                        onBlur={onBlur}
+                        onCheckedChange={onChange}
+                        checked={value}
+                      />
+                      <Label htmlFor={item.name}>{item.label}</Label>
+                      <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+                    </div>
+                  )}
+                />
+              )}
+              {item.field === "select" && (
+                <div>
+                  <Label htmlFor={item.name}>{item.label}</Label>
+                  <Controller
+                    name={item.name}
+                    control={control}
+                    render={({ field: { onBlur, onChange, ref, value } }) => (
+                      <Select onValueChange={onChange} value={value}>
+                        <SelectTrigger id="type" onBlur={onBlur} ref={ref}>
+                          <SelectValue placeholder="Select country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countries.map((country) => (
+                            <SelectItem
+                              key={country.value}
+                              value={country.value}
+                            >
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <ErrorMessage>{errors[item.name]?.message}</ErrorMessage>
+                </div>
+              )}
+            </Fragment>
+          ))}
+          <Button className="flex-1" type="submit">
+            Register
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 
